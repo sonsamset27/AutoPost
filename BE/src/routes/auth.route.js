@@ -1,0 +1,10 @@
+import { Router } from "express";
+import AuthController from "../controllers/auth.controller.js";
+import AuthValidator from "../validators/auth.validator.js";
+import AuthMiddleware from "../middlewares/auth.middleware.js";
+const AuthRoute = Router();
+AuthRoute.post("/signup", AuthValidator.signUp, AuthController.signUp);
+AuthRoute.post("/signin", AuthValidator.signIn, AuthController.signIn);
+AuthRoute.post("/refresh", AuthValidator.refresh, AuthController.refresh);
+AuthRoute.post("/logout", AuthMiddleware.Authentication, AuthValidator.logout, AuthController.logout);
+export default AuthRoute;

@@ -5,15 +5,15 @@ import ErrorCodes from "../errors/errorCodes.js";
 const handler = (req, res, next, options) => {
     res.status(HttpStatus.TOO_MANY_REQUESTS).json({
         success: false,
-        errorCode: ErrorCodes.SYS_001 || "RATE_LIMIT_EXCEEDED",
+        errorCode: ErrorCodes.SYS_003 || "RATE_LIMIT_EXCEEDED",
         message: options.message
     });
 };
 
 // GET: 100 requests per 15 minutes
 export const getLimiter15m = rateLimit({
-    windowMs: 15 * 60 * 1000, 
-    max: 100, 
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: "Bạn đã vượt quá giới hạn 100 lượt truy cập (GET) trong 15 phút. Vui lòng thử lại sau.",
     handler,
     standardHeaders: true,
@@ -22,8 +22,8 @@ export const getLimiter15m = rateLimit({
 
 // GET: 10 requests per 1 minute
 export const getLimiter1m = rateLimit({
-    windowMs: 1 * 60 * 1000, 
-    max: 10, 
+    windowMs: 1 * 60 * 1000,
+    max: 10,
     message: "Bạn đã vượt quá giới hạn 10 lượt truy cập (GET) trong 1 phút. Vui lòng thử lại sau.",
     handler,
     standardHeaders: true,
@@ -32,8 +32,8 @@ export const getLimiter1m = rateLimit({
 
 // POST/PUT/DELETE: 20 requests per 15 minutes
 export const writeLimiter15m = rateLimit({
-    windowMs: 15 * 60 * 1000, 
-    max: 20, 
+    windowMs: 15 * 60 * 1000,
+    max: 20,
     message: "Bạn đã vượt quá giới hạn 20 thao tác ghi (POST/PUT/DELETE) trong 15 phút. Vui lòng thử lại sau.",
     handler,
     standardHeaders: true,

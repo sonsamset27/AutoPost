@@ -3,12 +3,28 @@ import AppError from "../errors/appError.js";
 import ErrorCodes from "../errors/errorCodes.js";
 import getDriver from "../platformDrivers/registry.js";
 import CryptoUtil from "../utils/crypto.util.js";
+import User from "../models/user.model.js";
 
 const AccountService = {
     connect: async (userId, platform, config) => {
         if (!platform) {
             throw AppError.badRequest(ErrorCodes.INVALID_INPUT, "Platform is required");
         }
+
+        // Kiểm tra giới hạn gói Free: Tối đa 3 tài khoản liên kết
+        const user = await User.findById(userId);
+        if (!user) throw AppError.notFound(ErrorCodes.USER_001, "User not found");
+
+        if (user.plan === 'free') {
+            const currentAccountCount = await Account.countDocuments({ userId });
+            if (currentAccountCount >= 3) {
+                throw AppError.forbidden(
+                    ErrorCodes.AUTH_003,
+                    "Gói Free chỉ hỗ trợ tối đa 3 tài khoản liên kết. Vui lòng nâng cấp lên PRO."
+                );
+            }
+        }
+
         const driver = getDriver(platform);
         const platformAccountName = await driver.fetchAccountName(config);
 

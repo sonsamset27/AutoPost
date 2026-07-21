@@ -15,7 +15,6 @@ const AccountController = {
                 data: newAccount
             });
         } catch (error) {
-            console.error("Error at connectAccount:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -52,7 +51,6 @@ const AccountController = {
                 data: accounts
             });
         } catch (error) {
-            console.error("Error at getConnectedAccounts:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -79,7 +77,6 @@ const AccountController = {
                 data: updatedAccount
             });
         } catch (error) {
-            console.error("Error at updateAccount:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -104,7 +101,6 @@ const AccountController = {
                 message: "Social account disconnected successfully"
             });
         } catch (error) {
-            console.error("Error at disconnectAccount:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,

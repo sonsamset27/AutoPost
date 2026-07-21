@@ -12,7 +12,6 @@ const UserController = {
                 data: user
             });
         } catch (error) {
-            console.error("Error at getProfile:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -79,7 +78,6 @@ const UserController = {
                 message: "Mật khẩu đã được thay đổi thành công"
             });
         } catch (error) {
-            console.error("Error at changePassword:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,

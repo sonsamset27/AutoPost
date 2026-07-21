@@ -43,7 +43,6 @@ const AdminUserController = {
                 }
             });
         } catch (error) {
-            console.error("Error at getAllUsers (Admin):", error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: "Internal server error",
                 errorCode: ErrorCodes.SYS_001
@@ -74,7 +73,6 @@ const AdminUserController = {
                 }
             });
         } catch (error) {
-            console.error("Error at getUserDetail (Admin):", error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: "Internal server error",
                 errorCode: ErrorCodes.SYS_001
@@ -103,7 +101,6 @@ const AdminUserController = {
                 data: user
             });
         } catch (error) {
-            console.error("Error at banUser (Admin):", error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: "Internal server error",
                 errorCode: ErrorCodes.SYS_001
@@ -148,7 +145,6 @@ const AdminUserController = {
                 data: user
             });
         } catch (error) {
-            console.error("Error at upgradeUserPlan (Admin):", error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: "Internal server error",
                 errorCode: ErrorCodes.SYS_001
@@ -186,7 +182,6 @@ const AdminUserController = {
                 message: "User and all associated data deleted successfully"
             });
         } catch (error) {
-            console.error("Error at deleteUser (Admin):", error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: "Internal server error",
                 errorCode: ErrorCodes.SYS_001

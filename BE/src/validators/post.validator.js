@@ -49,16 +49,42 @@ const PostValidator = {
                         "scheduledAt must be in the future"
                     );
                 }
+                
+                // Giới hạn thời gian hẹn giờ theo Plan (24h cho Free)
+                if (req.user.plan === 'free') {
+                    const hoursDiff = (d.getTime() - Date.now()) / (1000 * 60 * 60);
+                    if (hoursDiff > 24) {
+                        throw AppError.forbidden(
+                            ErrorCodes.AUTH_003,
+                            "Gói Free chỉ được hẹn giờ tối đa 24 tiếng. Vui lòng nâng cấp lên PRO."
+                        );
+                    }
+                }
             }
 
             // mediaUrls nếu có phải là mảng chứa chuỗi
-            if (mediaUrls !== undefined) {
+            if (mediaUrls !== undefined && mediaUrls.length > 0) {
                 if (!Array.isArray(mediaUrls)) {
                     throw AppError.badRequest(
                         ErrorCodes.INVALID_INPUT,
                         "mediaUrls must be an array"
                     );
                 }
+                
+                // Giới hạn media theo Plan
+                if (req.user.plan === 'free') {
+                    throw AppError.forbidden(
+                        ErrorCodes.AUTH_003,
+                        "Gói Free không hỗ trợ đăng kèm ảnh/video. Vui lòng nâng cấp lên PRO."
+                    );
+                }
+                if (mediaUrls.length > 5) {
+                    throw AppError.badRequest(
+                        ErrorCodes.INVALID_INPUT,
+                        "Gói PRO hỗ trợ tối đa 5 ảnh/video mỗi bài."
+                    );
+                }
+
                 for (const url of mediaUrls) {
                     if (typeof url !== "string" || !url.trim()) {
                         throw AppError.badRequest(
@@ -165,16 +191,42 @@ const PostValidator = {
                         "scheduledAt must be in the future"
                     );
                 }
+
+                // Giới hạn thời gian hẹn giờ theo Plan (24h cho Free)
+                if (req.user.plan === 'free') {
+                    const hoursDiff = (d.getTime() - Date.now()) / (1000 * 60 * 60);
+                    if (hoursDiff > 24) {
+                        throw AppError.forbidden(
+                            ErrorCodes.AUTH_003,
+                            "Gói Free chỉ được hẹn giờ tối đa 24 tiếng. Vui lòng nâng cấp lên PRO."
+                        );
+                    }
+                }
             }
 
             // Validate mediaUrls nếu có
-            if (mediaUrls !== undefined) {
+            if (mediaUrls !== undefined && mediaUrls.length > 0) {
                 if (!Array.isArray(mediaUrls)) {
                     throw AppError.badRequest(
                         ErrorCodes.INVALID_INPUT,
                         "mediaUrls must be an array"
                     );
                 }
+
+                // Giới hạn media theo Plan
+                if (req.user.plan === 'free') {
+                    throw AppError.forbidden(
+                        ErrorCodes.AUTH_003,
+                        "Gói Free không hỗ trợ đăng kèm ảnh/video. Vui lòng nâng cấp lên PRO."
+                    );
+                }
+                if (mediaUrls.length > 5) {
+                    throw AppError.badRequest(
+                        ErrorCodes.INVALID_INPUT,
+                        "Gói PRO hỗ trợ tối đa 5 ảnh/video mỗi bài."
+                    );
+                }
+
                 for (const url of mediaUrls) {
                     if (typeof url !== "string" || !url.trim()) {
                         throw AppError.badRequest(

@@ -5,6 +5,7 @@ import ErrorCodes from "../errors/errorCodes.js";
 import getDriver from "../platformDrivers/registry.js";
 import CryptoUtil from "../utils/crypto.util.js"; // Import để giải mã config
 import { postQueue } from "../queues/post.queue.js";
+import User from "../models/user.model.js";
 
 const PostService = {
     // 1. Tạo bài viết & Cài đặt hẹn giờ vào BullMQ
@@ -18,6 +19,42 @@ const PostService = {
                 throw AppError.badRequest(ErrorCodes.INVALID_INPUT, "Thời gian hẹn giờ phải ở tương lai.");
             }
             status = "scheduled";
+        }
+
+        const user = await User.findById(userId);
+        if (!user) throw AppError.notFound(ErrorCodes.USER_001, "User not found");
+
+        if (user.plan === 'free') {
+            // Check giới hạn bài đăng trong tháng (max 30)
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            startOfMonth.setHours(0, 0, 0, 0);
+
+            const monthPostsCount = await Post.countDocuments({
+                userId,
+                createdAt: { $gte: startOfMonth }
+            });
+
+            if (monthPostsCount >= 30) {
+                throw AppError.forbidden(
+                    ErrorCodes.AUTH_003,
+                    "Gói Free giới hạn tối đa 30 bài đăng/tháng. Vui lòng nâng cấp lên PRO."
+                );
+            }
+
+            // Check giới hạn hàng đợi (max 3 bài scheduled)
+            if (status === 'scheduled') {
+                const scheduledPostsCount = await Post.countDocuments({
+                    userId,
+                    status: 'scheduled'
+                });
+                if (scheduledPostsCount >= 3) {
+                    throw AppError.forbidden(
+                        ErrorCodes.AUTH_003,
+                        "Gói Free chỉ cho phép tối đa 3 bài đang chờ hẹn giờ. Vui lòng nâng cấp lên PRO."
+                    );
+                }
+            }
         }
 
         let post = await Post.create({
@@ -79,6 +116,23 @@ const PostService = {
             const delay = new Date(updatePayload.scheduledAt).getTime() - Date.now();
             if (delay <= 0) {
                 throw AppError.badRequest(ErrorCodes.INVALID_INPUT, "Thời gian hẹn giờ mới phải ở tương lai.");
+            }
+
+            // Nếu chuyển từ draft sang scheduled, cần check limit queue cho user free
+            if (post.status === 'draft') {
+                const user = await User.findById(userId);
+                if (user && user.plan === 'free') {
+                    const scheduledPostsCount = await Post.countDocuments({
+                        userId,
+                        status: 'scheduled'
+                    });
+                    if (scheduledPostsCount >= 3) {
+                        throw AppError.forbidden(
+                            ErrorCodes.AUTH_003,
+                            "Gói Free chỉ cho phép tối đa 3 bài đang chờ hẹn giờ. Vui lòng nâng cấp lên PRO."
+                        );
+                    }
+                }
             }
 
             // Xóa Job hẹn giờ cũ trong BullMQ nếu có

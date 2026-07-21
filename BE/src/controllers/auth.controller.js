@@ -11,7 +11,6 @@ const AuthController = {
                 data: user
             });
         } catch (error) {
-            console.error("Error at signUp:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -44,7 +43,6 @@ const AuthController = {
 
             return res.status(200).json({ success: true, message: "Sign in successful" });
         } catch (error) {
-            console.error("Error at signIn:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -78,7 +76,6 @@ const AuthController = {
 
             return res.status(200).json({ success: true, message: "Token refreshed" });
         } catch (error) {
-            console.error("Error at refresh:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -102,7 +99,6 @@ const AuthController = {
 
             return res.status(200).json({ success: true, message: "Logged out successfully" });
         } catch (error) {
-            console.error("Error at logout:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,

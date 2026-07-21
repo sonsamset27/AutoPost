@@ -14,7 +14,6 @@ const TransactionController = {
                 data
             });
         } catch (error) {
-            console.error("Error at createPayment:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,
@@ -40,7 +39,6 @@ const TransactionController = {
                 data: result
             });
         } catch (error) {
-            console.error("Error at webhook:", error);
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message,

@@ -69,7 +69,7 @@ const AccountValidator = {
                 );
             }
 
-            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.accountId)) {
                 throw AppError.badRequest(
                     ErrorCodes.SYS_002,
                     "Invalid account id"
@@ -82,7 +82,7 @@ const AccountValidator = {
     },
     disconnectAccount(req, res, next) {
         try {
-            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.accountId)) {
                 throw AppError.badRequest(
                     ErrorCodes.SYS_002,
                     "Invalid account id"

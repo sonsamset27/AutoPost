@@ -69,7 +69,7 @@ const AccountController = {
     updateAccount: async (req, res) => {
         try {
             const userId = req.user.id;
-            const accountId = req.params.id;
+            const accountId = req.params.accountId;
             const { isActive, config } = req.body;
 
             const updatedAccount = await AccountService.update(userId, accountId, { isActive, config });
@@ -96,7 +96,7 @@ const AccountController = {
     disconnectAccount: async (req, res) => {
         try {
             const userId = req.user.id;
-            const accountId = req.params.id;
+            const accountId = req.params.accountId;
 
             await AccountService.delete(userId, accountId);
 

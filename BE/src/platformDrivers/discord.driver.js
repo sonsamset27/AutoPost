@@ -64,6 +64,27 @@ const DiscordDriver = {
             );
         }
     },
+    publish: async (content, config, mediaUrls = []) => {
+        const cleanMedia = (mediaUrls || []).filter(Boolean);
+
+        try {
+            const payload = { content };
+
+            // Nếu có ảnh truyền lên, biến đổi chúng thành khối Embed để Discord hiển thị mượt mà
+            if (cleanMedia.length > 0) {
+                payload.embeds = cleanMedia.map(url => ({
+                    image: { url }
+                }));
+            }
+
+            // Gọi Webhook đẩy bài lên Discord
+            await axios.post(config.webhookUrl, payload);
+
+            return { success: true };
+        } catch (err) {
+            throw new Error(err.response?.data?.message || err.message || "Lỗi không thể kết nối tới Discord Webhook");
+        }
+    }
 };
 
 export default DiscordDriver;

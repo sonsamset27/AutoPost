@@ -13,7 +13,7 @@ const getDriver = (platform) => {
 
     if (!driver) {
         throw AppError.badRequest(
-            ErrorCodes.ACCOUNT_005,
+            ErrorCodes.ACCOUNT_004,
             `Platform '${platform}' is not supported`
         );
     }

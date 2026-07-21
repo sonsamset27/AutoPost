@@ -81,6 +81,51 @@ const TelegramDriver = {
             );
         }
     },
+    publish: async (content, config, mediaUrls = []) => {
+        const baseUrl = `https://api.telegram.org/bot${config.botToken}`;
+        const cleanMedia = (mediaUrls || []).filter(Boolean);
+
+        try {
+            // Trường hợp 1: Có nhiều ảnh (Đăng dạng Album nhóm ảnh)
+            if (cleanMedia.length > 1) {
+                const mediaPayload = cleanMedia.map((url, index) => ({
+                    type: "photo",
+                    media: url,
+                    caption: index === 0 ? content : "", // Chỉ gắn nội dung vào bức ảnh đầu tiên để tránh lặp chữ
+                    parse_mode: "Markdown"
+                }));
+
+                const { data } = await axios.post(`${baseUrl}/sendMediaGroup`, {
+                    chat_id: config.chatId,
+                    media: mediaPayload
+                });
+                return { publishedUrl: data.result?.[0]?.chat?.username ? `https://t.me/${data.result[0].chat.username}/${data.result[0].message_id}` : null };
+            }
+
+            // Trường hợp 2: Chỉ có đúng 1 ảnh
+            if (cleanMedia.length === 1) {
+                const { data } = await axios.post(`${baseUrl}/sendPhoto`, {
+                    chat_id: config.chatId,
+                    photo: cleanMedia[0],
+                    caption: content,
+                    parse_mode: "Markdown"
+                });
+                return { publishedUrl: data.result?.chat?.username ? `https://t.me/${data.result.chat.username}/${data.result.message_id}` : null };
+            }
+
+            // Trường hợp 3: Chỉ đăng bài viết dạng chữ (Text) thuần túy
+            const { data } = await axios.post(`${baseUrl}/sendMessage`, {
+                chat_id: config.chatId,
+                text: content,
+                parse_mode: "Markdown"
+            });
+            return { publishedUrl: data.result?.chat?.username ? `https://t.me/${data.result.chat.username}/${data.result.message_id}` : null };
+
+        } catch (err) {
+            // Quăng lỗi chuỗi thô để PostService gom logs, không quăng AppError làm chết luồng hàng đợi
+            throw new Error(err.response?.data?.description || err.message || "Lỗi không xác định khi đăng bài lên Telegram");
+        }
+    }
 };
 
 export default TelegramDriver;

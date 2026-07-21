@@ -18,6 +18,7 @@ const ErrorCodes = Object.freeze({
     ACC_001: 'ACC_001',//tài khoản đã tồn tại
     ACC_002: 'ACC_002',//không tìm thấy tài khoản
     ACC_003: 'ACC_003',//không tìm thấy người dùng
+    ACC_004: 'ACC_004', // không hỗ trợ platform
 
 });
 export default ErrorCodes;

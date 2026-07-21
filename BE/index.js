@@ -4,6 +4,7 @@ import connectDB from "./src/configs/db.js";
 import UserRoute from "./src/routes/user.route.js";
 import AuthRoute from "./src/routes/auth.route.js";
 import AccountRoute from "./src/routes/account.route.js";
+import PostRoute from "./src/routes/post.route.js";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", AuthRoute);
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/accounts", AccountRoute);
+app.use("/api/v1/posts", PostRoute);
 app.get("/", (req, res) => {
     res.send("Backend is running!!!");
 });

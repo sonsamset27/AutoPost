@@ -19,6 +19,14 @@ const ErrorCodes = Object.freeze({
     ACC_002: 'ACC_002',//không tìm thấy tài khoản
     ACC_003: 'ACC_003',//không tìm thấy người dùng
     ACC_004: 'ACC_004', // không hỗ trợ platform
-
+    // POST
+    POST_NOT_FOUND: 'POST_NOT_FOUND', // không tìm thấy bài đăng
+    POST_002: 'POST_002', // không thể chỉnh sửa bài đã publish/processing
+    // TRANSACTION
+    TXN_001: 'TXN_001', // không tìm thấy giao dịch
+    TXN_002: 'TXN_002', // thiếu thông tin giao dịch
+    // GENERIC
+    INVALID_INPUT: 'INVALID_INPUT', // dữ liệu đầu vào không hợp lệ
+    INVALID_OPERATION: 'INVALID_OPERATION', // thao tác không hợp lệ
 });
 export default ErrorCodes;

@@ -18,6 +18,24 @@ const UserService = {
             throw AppError.notFound(ErrorCodes.USER_001, "Users not found");
         }
         return users;
-    }
+    },
+    changePassword: async (userId, oldPassword, newPassword) => {
+        const bcrypt = (await import('bcrypt')).default;
+        const user = await User.findById(userId);
+        if (!user) {
+            throw AppError.notFound(ErrorCodes.USER_001, "User not found");
+        }
+        
+        const isMatch = bcrypt.compareSync(oldPassword, user.password);
+        if (!isMatch) {
+            throw AppError.unauthorized(ErrorCodes.AUTH_001, "Mật khẩu cũ không chính xác");
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        user.password = bcrypt.hashSync(newPassword, salt);
+        await user.save();
+        return true;
+    },
+
 }
 export default UserService;

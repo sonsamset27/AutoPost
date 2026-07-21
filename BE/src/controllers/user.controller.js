@@ -60,6 +60,37 @@ const UserController = {
                 errorCode: ErrorCodes.SYS_001
             });
         }
+    },
+    changePassword: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { oldPassword, newPassword } = req.body;
+
+            if (!oldPassword || !newPassword) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    errorCode: ErrorCodes.INVALID_INPUT,
+                    message: "Vui lòng cung cấp mật khẩu cũ và mật khẩu mới"
+                });
+            }
+
+            await UserService.changePassword(userId, oldPassword, newPassword);
+            
+            return res.status(HttpStatus.OK).json({
+                message: "Mật khẩu đã được thay đổi thành công"
+            });
+        } catch (error) {
+            console.error("Error at changePassword:", error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message,
+                    errorCode: error.errorCode
+                });
+            }
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message: "Internal server error",
+                errorCode: ErrorCodes.SYS_001
+            });
+        }
     }
 }
 export default UserController;

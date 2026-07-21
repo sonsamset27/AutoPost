@@ -32,8 +32,6 @@ const AuthValidator = {
         }
     },
     refresh: (req, res, next) => {
-        console.log("Headers:", req.headers.cookie);
-        console.log("Cookies:", req.cookies);
         try {
             const refreshToken = req.cookies.refreshToken;
             if (!refreshToken) {
@@ -45,8 +43,6 @@ const AuthValidator = {
         }
     },
     logout: (req, res, next) => {
-        console.log("Headers:", req.headers.cookie);
-        console.log("Cookies:", req.cookies);
         try {
             const refreshToken = req.cookies.refreshToken;
             if (!refreshToken) {

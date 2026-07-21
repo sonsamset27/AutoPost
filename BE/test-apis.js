@@ -8,7 +8,7 @@ async function testApis() {
     // 1. Auth: Sign up
     let userEmail = `testuser_${Date.now()}@test.com`;
     let userPassword = "password123";
-    
+
     let signUpRes;
     try {
         signUpRes = await axios.post(`${BASE_URL}/auth/signup`, {
@@ -34,7 +34,7 @@ async function testApis() {
             password: userPassword
         });
         console.log("✅ Sign in success:", signInRes.data.message);
-        
+
         // Extract cookies
         if (signInRes.headers['set-cookie']) {
             cookies = signInRes.headers['set-cookie'].map(c => c.split(';')[0]).join('; ');
@@ -158,6 +158,61 @@ async function testApis() {
         }
     } catch (err) {
         console.error("❌ Refresh failed:", err.response?.data || err.message);
+    }
+
+    // 15. User: Change Password
+    try {
+        const changePassRes = await axios.put(`${BASE_URL}/users/change-password`, {
+            oldPassword: "password123",
+            newPassword: "password1234"
+        }, authConfig);
+        console.log("✅ Change password success:", changePassRes.data.message);
+    } catch (err) {
+        console.error("❌ Change password failed:", err.response?.data || err.message);
+    }
+
+    // 16. Admin: Get Users (Expected to fail with 403 because role is user)
+    try {
+        const adminUsersRes = await axios.get(`${BASE_URL}/admin/users`, authConfig);
+        console.log("✅ Admin get users success (UNEXPECTED):", adminUsersRes.data);
+    } catch (err) {
+        if (err.response?.status === 403) {
+            console.log("✅ Admin get users correctly forbidden for normal user");
+        } else {
+            console.error("❌ Admin get users failed unexpectedly:", err.response?.data || err.message);
+        }
+    }
+
+    // 17. Payment: Create Payment
+    let orderCode = null;
+    try {
+        const createPaymentRes = await axios.post(`${BASE_URL}/transactions/create-payment`, {}, authConfig);
+        console.log("✅ Create payment success:", createPaymentRes.data.data.checkoutUrl);
+        // Extract orderCode from checkoutUrl for testing webhook
+        orderCode = createPaymentRes.data.data.transaction.orderCode;
+    } catch (err) {
+        console.error("❌ Create payment failed:", err.response?.data || err.message);
+    }
+
+    // 18. Payment: Webhook Mock
+    if (orderCode) {
+        try {
+            const webhookRes = await axios.post(`${BASE_URL}/transactions/webhook`, {
+                orderCode,
+                status: "PAID"
+            });
+            console.log("✅ Webhook processed success:", webhookRes.data.message);
+
+            // Verify plan upgraded
+            const profileRes = await axios.get(`${BASE_URL}/users/profile`, authConfig);
+            if (profileRes.data.data.plan === 'pro') {
+                console.log("✅ Plan upgraded to pro successfully!");
+            } else {
+                console.error("❌ Plan was not upgraded to pro");
+            }
+        } catch (err) {
+            console.error("❌ Webhook failed:", err.response?.data || err.message);
+        }
     }
 
     // 14. Auth: Logout

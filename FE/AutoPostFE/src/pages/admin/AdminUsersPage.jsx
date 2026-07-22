@@ -14,10 +14,15 @@ const AdminUsersPage = () => {
   const [durationDays, setDurationDays] = useState(30);
   const [upgrading, setUpgrading] = useState(false);
 
+  const [filters, setFilters] = useState({ search: '', plan: 'all' });
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await adminApi.getUsers();
+      const params = {};
+      if (filters.search) params.search = filters.search;
+      if (filters.plan && filters.plan !== 'all') params.plan = filters.plan;
+      const res = await adminApi.getUsers(params);
       setUsers(res.data?.users || res.data || []);
     } catch (error) {
       if (!error.message?.includes('404')) {
@@ -30,7 +35,7 @@ const AdminUsersPage = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [filters]);
 
   const handleToggleBan = async (id, currentStatus) => {
     try {
@@ -167,16 +172,22 @@ const AdminUsersPage = () => {
       </div>
 
       <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap gap-4">
-        <Input 
+        <Input.Search 
           placeholder="Tìm email hoặc tên..." 
-          prefix={<Search className="w-4 h-4 text-slate-400" />}
+          allowClear
+          onSearch={(value) => setFilters(prev => ({ ...prev, search: value }))}
           className="max-w-sm rounded-lg"
         />
-        <Select defaultValue="all" className="w-32 rounded-lg" options={[
-          { value: 'all', label: 'Tất cả gói' },
-          { value: 'free', label: 'FREE' },
-          { value: 'pro', label: 'PRO' },
-        ]} />
+        <Select 
+          value={filters.plan}
+          onChange={(value) => setFilters(prev => ({ ...prev, plan: value }))}
+          className="w-32 rounded-lg" 
+          options={[
+            { value: 'all', label: 'Tất cả gói' },
+            { value: 'free', label: 'FREE' },
+            { value: 'pro', label: 'PRO' },
+          ]} 
+        />
       </div>
 
       <div className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">

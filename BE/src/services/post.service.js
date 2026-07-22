@@ -102,10 +102,13 @@ const PostService = {
             throw AppError.badRequest(ErrorCodes.INVALID_OPERATION, "Không thể chỉnh sửa bài đăng đang xử lý hoặc đã phát.");
         }
 
-        if (updatePayload.scheduledAt) {
-            const delay = new Date(updatePayload.scheduledAt).getTime() - Date.now();
-            if (delay <= 0) {
-                throw AppError.badRequest(ErrorCodes.INVALID_INPUT, "Thời gian hẹn giờ mới phải ở tương lai.");
+        if (updatePayload.hasOwnProperty('scheduledAt')) {
+            let delay = 0;
+            if (updatePayload.scheduledAt) {
+                delay = new Date(updatePayload.scheduledAt).getTime() - Date.now();
+                if (delay < 0) {
+                    delay = 0;
+                }
             }
 
             if (post.status === 'draft') {

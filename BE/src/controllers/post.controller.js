@@ -39,9 +39,18 @@ const PostController = {
             // Thiết lập bộ lọc mặc định là của riêng User đang đăng nhập
             const filter = { userId };
 
-            // Client có thể lọc theo trạng thái: ?status=scheduled hoặc ?status=published
-            if (req.query.status) {
+            // Client có thể lọc theo trạng thái, nội dung, ngày tạo
+            if (req.query.status && req.query.status !== 'all') {
                 filter.status = req.query.status;
+            }
+            if (req.query.search) {
+                filter.content = { $regex: req.query.search, $options: 'i' };
+            }
+            if (req.query.startDate && req.query.endDate) {
+                filter.createdAt = {
+                    $gte: new Date(req.query.startDate),
+                    $lte: new Date(req.query.endDate)
+                };
             }
 
             const posts = await PostService.getAll(filter, page, limit);

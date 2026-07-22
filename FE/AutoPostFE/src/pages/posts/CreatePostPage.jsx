@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Checkbox, Upload, DatePicker, message, Row, Col, Card, Spin } from 'antd';
+import { Form, Input, Button, Checkbox, Upload, DatePicker, Row, Col, Card, Spin, App } from 'antd';
 import { UploadCloud, Clock, Send, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import accountApi from '../../api/accountApi';
 import postApi from '../../api/postApi';
 import mediaApi from '../../api/mediaApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 const { TextArea } = Input;
@@ -15,6 +15,7 @@ const CreatePostPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const { message } = App.useApp();
   
   const [accounts, setAccounts] = useState([]);
   const [loadingAccounts, setLoadingAccounts] = useState(true);
@@ -23,7 +24,42 @@ const CreatePostPage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   
+  const { id } = useParams();
   const [previewContent, setPreviewContent] = useState('');
+  const [loadingPost, setLoadingPost] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      const fetchPost = async () => {
+        setLoadingPost(true);
+        try {
+          const res = await postApi.getPostById(id);
+          const post = res.data;
+          
+          form.setFieldsValue({
+            content: post.content,
+            accountIds: post.accountIds?.map(acc => typeof acc === 'object' ? acc._id : acc) || [],
+            scheduledAt: post.scheduledAt ? dayjs(post.scheduledAt) : null,
+          });
+          setPreviewContent(post.content);
+          
+          if (post.mediaUrls && post.mediaUrls.length > 0) {
+            setFileList(post.mediaUrls.map((url, i) => ({
+              uid: `-${i}`,
+              name: `media-${i}`,
+              status: 'done',
+              url: url
+            })));
+          }
+        } catch (error) {
+          message.error('Không thể lấy dữ liệu bài viết');
+        } finally {
+          setLoadingPost(false);
+        }
+      };
+      fetchPost();
+    }
+  }, [id, form]);
 
   useEffect(() => {
     const fetchActiveAccounts = async () => {
@@ -87,10 +123,17 @@ const CreatePostPage = () => {
 
       if (values.scheduledAt) {
         payload.scheduledAt = values.scheduledAt.toISOString();
+      } else {
+        payload.scheduledAt = null;
       }
 
-      await postApi.createPost(payload);
-      message.success('Bài viết đã được tạo thành công!');
+      if (id) {
+        await postApi.updatePost(id, payload);
+        message.success('Bài viết đã được cập nhật thành công!');
+      } else {
+        await postApi.createPost(payload);
+        message.success('Bài viết đã được tạo thành công!');
+      }
       navigate('/posts');
     } catch (error) {
       message.error(error.message || 'Lỗi khi tạo bài viết');
@@ -102,7 +145,9 @@ const CreatePostPage = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Soạn Bài Viết Mới</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
+          {id ? 'Cập Nhật Bài Viết' : 'Soạn Bài Viết Mới'}
+        </h1>
         <p className="text-slate-500 dark:text-slate-400">Thiết lập nội dung, hẹn giờ và phát đa nền tảng</p>
       </div>
 
@@ -204,10 +249,10 @@ const CreatePostPage = () => {
                   type="primary" 
                   htmlType="submit" 
                   icon={<Send className="w-4 h-4" />}
-                  loading={submitting || isUploading}
+                  loading={submitting || isUploading || loadingPost}
                   className="bg-indigo-600 hover:bg-indigo-700 h-10 px-8 rounded-lg shadow-indigo-500/30"
                 >
-                  Đăng Bài / Hẹn Giờ
+                  {id ? 'Cập Nhật Bài Viết' : 'Đăng Bài / Hẹn Giờ'}
                 </Button>
                 <Button 
                   className="h-10 px-8 rounded-lg"

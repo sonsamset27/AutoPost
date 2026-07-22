@@ -15,10 +15,19 @@ const PostsListPage = () => {
   const [selectedPostLogs, setSelectedPostLogs] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(null);
 
+  const [filters, setFilters] = useState({ status: 'all', search: '', startDate: null, endDate: null });
+
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const res = await postApi.getPosts();
+      const params = {};
+      if (filters.status !== 'all') params.status = filters.status;
+      if (filters.search) params.search = filters.search;
+      if (filters.startDate && filters.endDate) {
+        params.startDate = filters.startDate;
+        params.endDate = filters.endDate;
+      }
+      const res = await postApi.getPosts(params);
       setPosts(res.data || []);
     } catch (error) {
       if (error.statusCode === 404) {
@@ -33,7 +42,7 @@ const PostsListPage = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [filters]);
 
   const handleDelete = async (id) => {
     try {
@@ -149,18 +158,37 @@ const PostsListPage = () => {
       </div>
 
       <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row flex-wrap gap-4">
-        <Input 
+        <Input.Search 
           placeholder="Tìm kiếm nội dung..." 
-          prefix={<Search className="w-4 h-4 text-slate-400" />}
+          allowClear
+          onSearch={(value) => setFilters(prev => ({ ...prev, search: value }))}
           className="w-full sm:max-w-xs rounded-lg"
         />
-        <Select defaultValue="all" className="w-full sm:w-40 rounded-lg" options={[
-          { value: 'all', label: 'Tất cả trạng thái' },
-          { value: 'scheduled', label: 'Đã lên lịch' },
-          { value: 'published', label: 'Đã đăng' },
-          { value: 'failed', label: 'Lỗi' },
-        ]} />
-        <RangePicker className="w-full sm:w-auto rounded-lg" />
+        <Select 
+          value={filters.status}
+          onChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+          className="w-full sm:w-40 rounded-lg" 
+          options={[
+            { value: 'all', label: 'Tất cả trạng thái' },
+            { value: 'scheduled', label: 'Đã lên lịch' },
+            { value: 'published', label: 'Đã đăng' },
+            { value: 'failed', label: 'Lỗi' },
+          ]} 
+        />
+        <RangePicker 
+          className="w-full sm:w-auto rounded-lg" 
+          onChange={(dates) => {
+            if (dates) {
+              setFilters(prev => ({ 
+                ...prev, 
+                startDate: dates[0].startOf('day').toISOString(), 
+                endDate: dates[1].endOf('day').toISOString() 
+              }));
+            } else {
+              setFilters(prev => ({ ...prev, startDate: null, endDate: null }));
+            }
+          }}
+        />
       </div>
 
       <div className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
@@ -181,7 +209,7 @@ const PostsListPage = () => {
         width={typeof window !== 'undefined' && window.innerWidth < 500 ? '100%' : 450}
         onClose={() => setLogDrawerOpen(false)}
         open={logDrawerOpen}
-        bodyStyle={{ padding: '16px' }}
+        styles={{ body: { padding: '16px' } }}
       >
         {selectedPostLogs.length === 0 ? (
           <div className="text-center text-slate-500 mt-10">Chưa có log hệ thống cho bài viết này.</div>

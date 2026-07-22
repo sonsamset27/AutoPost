@@ -61,7 +61,7 @@ const DashboardLayout = () => {
         placement="left"
         onClose={() => setMobileMenuOpen(false)}
         open={mobileMenuOpen}
-        width={260}
+        size="default"
         styles={{ body: { padding: 0 } }}
         closable={false}
         className="lg:hidden"

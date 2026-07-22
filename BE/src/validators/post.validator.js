@@ -34,8 +34,8 @@ const PostValidator = {
                 }
             }
 
-            // scheduledAt nếu có phải là Date hợp lệ và ở tương lai
-            if (scheduledAt !== undefined) {
+            // scheduledAt nếu có phải là Date hợp lệ và ở tương lai (null nghĩa là đăng ngay)
+            if (scheduledAt !== undefined && scheduledAt !== null) {
                 const d = new Date(scheduledAt);
                 if (isNaN(d.getTime())) {
                     throw AppError.badRequest(
@@ -176,8 +176,8 @@ const PostValidator = {
                 req.body.content = content.trim();
             }
 
-            // Validate scheduledAt nếu có
-            if (scheduledAt !== undefined) {
+            // Validate scheduledAt nếu có (null nghĩa là đăng ngay)
+            if (scheduledAt !== undefined && scheduledAt !== null) {
                 const d = new Date(scheduledAt);
                 if (isNaN(d.getTime())) {
                     throw AppError.badRequest(

@@ -94,9 +94,9 @@ const ConnectedAccountsPage = () => {
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Tài khoản kết nối</h1>
           <p className="text-slate-500 dark:text-slate-400">Quản lý các tài khoản mạng xã hội để tự động phát tin bài</p>
         </div>
-        <Button 
-          type="primary" 
-          icon={<Plus className="w-4 h-4" />} 
+        <Button
+          type="primary"
+          icon={<Plus className="w-4 h-4" />}
           onClick={() => setIsModalOpen(true)}
           className="bg-indigo-600 hover:bg-indigo-700 h-10 px-6 rounded-lg shadow-indigo-500/30"
           disabled={user?.plan === 'free' && accounts.length >= 3}
@@ -116,8 +116,8 @@ const ConnectedAccountsPage = () => {
           </div>
         ) : (
           accounts.map(acc => (
-            <Card 
-              key={acc._id} 
+            <Card
+              key={acc._id}
               className="rounded-xl border-slate-200 dark:border-slate-800 dark:bg-slate-900/50 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -135,8 +135,8 @@ const ConnectedAccountsPage = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-slate-500">Trạng thái:</span>
-                  <Switch 
-                    checked={acc.isActive} 
+                  <Switch
+                    checked={acc.isActive}
                     onChange={() => handleToggleActive(acc._id, acc.isActive)}
                     size="small"
                   />
@@ -150,9 +150,6 @@ const ConnectedAccountsPage = () => {
               </div>
 
               <div className="flex gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
-                <Button block type="default" icon={<Edit2 className="w-4 h-4" />}>
-                  Sửa
-                </Button>
                 <Popconfirm
                   title="Xóa tài khoản?"
                   description="Bạn có chắc muốn hủy liên kết tài khoản này?"
@@ -178,16 +175,16 @@ const ConnectedAccountsPage = () => {
         footer={null}
         destroyOnHidden
       >
-        <Form 
-          form={form} 
-          layout="vertical" 
+        <Form
+          form={form}
+          layout="vertical"
           onFinish={handleConnect}
           initialValues={{ platform: 'telegram' }}
         >
           <Form.Item name="platform" label="Nền tảng">
-            <Radio.Group 
-              optionType="button" 
-              buttonStyle="solid" 
+            <Radio.Group
+              optionType="button"
+              buttonStyle="solid"
               className="w-full flex"
               onChange={(e) => setPlatform(e.target.value)}
             >
@@ -198,17 +195,17 @@ const ConnectedAccountsPage = () => {
 
           {platform === 'telegram' && (
             <>
-              <Form.Item 
-                name="botToken" 
-                label="Bot Token" 
+              <Form.Item
+                name="botToken"
+                label="Bot Token"
                 rules={[{ required: true, message: 'Vui lòng nhập Bot Token!' }]}
                 tooltip="Lấy token từ @BotFather trên Telegram"
               >
                 <Input placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" />
               </Form.Item>
-              <Form.Item 
-                name="chatId" 
-                label="Chat ID (Kênh / Nhóm)" 
+              <Form.Item
+                name="chatId"
+                label="Chat ID (Kênh / Nhóm)"
                 rules={[{ required: true, message: 'Vui lòng nhập Chat ID!' }]}
                 tooltip="Ví dụ: -100123456789"
               >
@@ -218,9 +215,9 @@ const ConnectedAccountsPage = () => {
           )}
 
           {platform === 'discord' && (
-            <Form.Item 
-              name="webhookUrl" 
-              label="Webhook URL" 
+            <Form.Item
+              name="webhookUrl"
+              label="Webhook URL"
               rules={[{ required: true, message: 'Vui lòng nhập Webhook URL!' }]}
             >
               <Input placeholder="https://discord.com/api/webhooks/..." />

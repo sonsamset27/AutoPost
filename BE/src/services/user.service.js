@@ -14,7 +14,6 @@ const UserService = {
     getAll: async (filter = {}, page = 1, limit = 10) => {
         const skip = (page - 1) * limit;
         const users = await User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).select({ password: 0 });
-        // Trả về mảng rỗng nếu chưa có user nào (REST convention đúng)
         return users;
     },
     changePassword: async (userId, oldPassword, newPassword) => {
@@ -23,7 +22,7 @@ const UserService = {
         if (!user) {
             throw AppError.notFound(ErrorCodes.USER_001, "User not found");
         }
-        
+
         const isMatch = bcrypt.compareSync(oldPassword, user.password);
         if (!isMatch) {
             throw AppError.unauthorized(ErrorCodes.AUTH_001, "Mật khẩu cũ không chính xác");

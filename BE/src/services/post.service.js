@@ -102,12 +102,14 @@ const PostService = {
             throw AppError.badRequest(ErrorCodes.INVALID_OPERATION, "Không thể chỉnh sửa bài đăng đang xử lý hoặc đã phát.");
         }
 
+        let shouldAddJob = false;
+        let jobDelay = 0;
+
         if (updatePayload.hasOwnProperty('scheduledAt')) {
-            let delay = 0;
             if (updatePayload.scheduledAt) {
-                delay = new Date(updatePayload.scheduledAt).getTime() - Date.now();
-                if (delay < 0) {
-                    delay = 0;
+                jobDelay = new Date(updatePayload.scheduledAt).getTime() - Date.now();
+                if (jobDelay < 0) {
+                    jobDelay = 0;
                 }
             }
 
@@ -131,13 +133,8 @@ const PostService = {
                 const oldJob = await postQueue.getJob(post.bullJobId);
                 if (oldJob) await oldJob.remove();
             }
-            const newJob = await postQueue.add(
-                `post-job-${post._id}`,
-                { postId: post._id, userId },
-                { delay }
-            );
 
-            post.bullJobId = newJob.id;
+            shouldAddJob = true;
             post.status = "scheduled";
             post.scheduledAt = updatePayload.scheduledAt;
         }
@@ -147,6 +144,18 @@ const PostService = {
         if (updatePayload.accountIds) post.accountIds = updatePayload.accountIds;
 
         await post.save();
+
+        if (shouldAddJob) {
+            const newJob = await postQueue.add(
+                `post-job-${post._id}`,
+                { postId: post._id, userId },
+                { delay: jobDelay }
+            );
+
+            post.bullJobId = newJob.id;
+            await post.save();
+        }
+
         return post;
     },
 

@@ -29,7 +29,7 @@ axiosClient.interceptors.response.use(
     const status = error.response?.status;
 
     // Handle 401 Unauthorized for access token expiry
-    if (status === 401 && !originalRequest._retry) {
+    if (status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/')) {
       originalRequest._retry = true;
       try {
         // Attempt to refresh token

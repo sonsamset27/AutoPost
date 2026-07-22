@@ -174,6 +174,7 @@ const DashboardOverviewPage = () => {
           pagination={false} 
           loading={loading}
           className="custom-table"
+          scroll={{ x: 800 }}
         />
       </Card>
     </div>

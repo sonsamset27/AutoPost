@@ -127,7 +127,7 @@ const CreatePostPage = () => {
                   <Checkbox.Group className="w-full">
                     <Row gutter={[12, 12]}>
                       {accounts.map(acc => (
-                        <Col span={12} key={acc._id}>
+                        <Col xs={24} sm={12} key={acc._id}>
                           <Checkbox value={acc._id} className="dark:text-slate-300">
                             <span className="capitalize font-medium text-indigo-500 mr-1">[{acc.platform}]</span> 
                             <span className="truncate inline-block align-bottom max-w-[150px]">{acc.platformAccountName}</span>
@@ -223,7 +223,7 @@ const CreatePostPage = () => {
         <Col xs={24} lg={10}>
           <div className="sticky top-6">
             <h3 className="text-lg font-semibold mb-4 text-slate-800 dark:text-white">Xem trước hiển thị (Preview)</h3>
-            <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-[2rem] border-8 border-slate-200 dark:border-slate-700 shadow-xl relative min-h-[400px]">
+            <div className="bg-slate-100 dark:bg-slate-800 p-2 sm:p-4 rounded-3xl sm:rounded-[2rem] border-4 sm:border-8 border-slate-200 dark:border-slate-700 shadow-xl relative min-h-[300px] sm:min-h-[400px]">
               {/* Phone notch mockup */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-200 dark:bg-slate-700 rounded-b-xl" />
               

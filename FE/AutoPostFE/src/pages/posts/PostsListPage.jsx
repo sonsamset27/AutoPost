@@ -148,19 +148,19 @@ const PostsListPage = () => {
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap gap-4">
+      <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row flex-wrap gap-4">
         <Input 
           placeholder="Tìm kiếm nội dung..." 
           prefix={<Search className="w-4 h-4 text-slate-400" />}
-          className="max-w-xs rounded-lg"
+          className="w-full sm:max-w-xs rounded-lg"
         />
-        <Select defaultValue="all" className="w-32 rounded-lg" options={[
+        <Select defaultValue="all" className="w-full sm:w-40 rounded-lg" options={[
           { value: 'all', label: 'Tất cả trạng thái' },
           { value: 'scheduled', label: 'Đã lên lịch' },
           { value: 'published', label: 'Đã đăng' },
           { value: 'failed', label: 'Lỗi' },
         ]} />
-        <RangePicker className="rounded-lg" />
+        <RangePicker className="w-full sm:w-auto rounded-lg" />
       </div>
 
       <div className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
@@ -171,13 +171,14 @@ const PostsListPage = () => {
           loading={loading}
           pagination={{ pageSize: 10 }}
           className="custom-table"
+          scroll={{ x: 800 }}
         />
       </div>
 
       <Drawer
         title={<span className="font-bold">Log Chi Tiết Bài Đăng #{selectedPostId?.slice(-6)}</span>}
         placement="right"
-        width={450}
+        width={typeof window !== 'undefined' && window.innerWidth < 500 ? '100%' : 450}
         onClose={() => setLogDrawerOpen(false)}
         open={logDrawerOpen}
         bodyStyle={{ padding: '16px' }}

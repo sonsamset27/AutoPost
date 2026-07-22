@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Layout, Menu, Button, Dropdown, Avatar } from 'antd';
+import { Layout, Menu, Button, Dropdown, Avatar, Drawer } from 'antd';
 import { 
   LayoutDashboard, 
   Share2, 
@@ -20,7 +20,7 @@ import PageTransition from '../components/layout/PageTransition';
 const { Header, Sider, Content } = Layout;
 
 const DashboardLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -56,19 +56,41 @@ const DashboardLayout = () => {
 
   return (
     <Layout className="min-h-screen bg-transparent transition-colors duration-300">
+      {/* Mobile Drawer */}
+      <Drawer
+        placement="left"
+        onClose={() => setMobileMenuOpen(false)}
+        open={mobileMenuOpen}
+        width={260}
+        styles={{ body: { padding: 0 } }}
+        closable={false}
+        className="lg:hidden"
+      >
+        <div className="h-16 flex items-center justify-center border-b border-slate-200/50 dark:border-slate-800/50">
+          <Rocket className="w-8 h-8 text-indigo-500" />
+          <span className="ml-2 font-bold text-lg text-slate-900 dark:text-white text-gradient">AutoPost</span>
+        </div>
+        <Menu
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+          className="border-none bg-transparent pt-4 px-2 custom-menu"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      </Drawer>
+
+      {/* Desktop Sider */}
       <Sider 
         trigger={null} 
         collapsible 
-        collapsed={collapsed}
-        breakpoint="lg"
-        onBreakpoint={(broken) => setCollapsed(broken)}
-        className="glass border-r border-slate-200/50 dark:border-slate-800/50 shadow-sm z-10"
+        collapsed={false}
+        className="hidden lg:block glass border-r border-slate-200/50 dark:border-slate-800/50 shadow-sm z-10"
         width={260}
         style={{ background: 'transparent' }}
       >
         <div className="h-16 flex items-center justify-center border-b border-slate-200/50 dark:border-slate-800/50">
           <Rocket className="w-8 h-8 text-indigo-500" />
-          {!collapsed && <span className="ml-2 font-bold text-lg text-slate-900 dark:text-white text-gradient">AutoPost</span>}
+          <span className="ml-2 font-bold text-lg text-slate-900 dark:text-white text-gradient">AutoPost</span>
         </div>
         <Menu
           mode="inline"
@@ -87,8 +109,8 @@ const DashboardLayout = () => {
             <Button
               type="text"
               icon={<MenuIcon />}
-              onClick={() => setCollapsed(!collapsed)}
-              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             />
           </div>
           <div className="flex items-center gap-4">

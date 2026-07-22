@@ -49,7 +49,7 @@ const AuthLayout = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative w-full max-w-md p-10 glass-card mx-4"
+        className="relative w-full max-w-md p-6 sm:p-10 glass-card mx-4"
       >
         <div className="flex flex-col items-center mb-8">
           <motion.div 

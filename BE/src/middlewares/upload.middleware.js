@@ -9,14 +9,14 @@ const storage = new CloudinaryStorage({
     params: {
         folder: "autopost_media",
         allowed_formats: ["jpg", "jpeg", "png", "gif", "mp4", "mov"],
-        resource_type: "auto" // Hỗ trợ cả image và video
+        resource_type: "auto"
     }
 });
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit per file
+        fileSize: 10 * 1024 * 1024 // 10MB 
     },
     fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/image\/(jpeg|jpg|png|gif)|video\/(mp4|quicktime)/)) {

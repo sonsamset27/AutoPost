@@ -80,10 +80,10 @@ const AdminUsersPage = () => {
       render: (name, record) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300">
-            {name.charAt(0).toUpperCase()}
+            {name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div>
-            <div className="font-semibold text-slate-800 dark:text-slate-200">{name}</div>
+            <div className="font-semibold text-slate-800 dark:text-slate-200">{name || 'Người dùng'}</div>
             <div className="text-xs text-slate-500">{record.email}</div>
           </div>
         </div>
@@ -187,6 +187,7 @@ const AdminUsersPage = () => {
           loading={loading}
           pagination={{ pageSize: 10 }}
           className="custom-table"
+          scroll={{ x: 800 }}
         />
       </div>
 

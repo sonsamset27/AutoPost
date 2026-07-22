@@ -3,6 +3,7 @@ import { Form, Input, Button, message } from 'antd';
 import { Mail, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { motion } from 'framer-motion';
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -49,14 +50,16 @@ const LoginPage = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
-            className="w-full h-12 rounded-lg font-medium text-base shadow-indigo-500/30 hover:shadow-indigo-500/50"
-            loading={loading}
-          >
-            Đăng Nhập
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              className="w-full h-12 rounded-xl font-semibold text-base bg-gradient-to-r from-indigo-500 to-violet-500 border-none shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50"
+              loading={loading}
+            >
+              Đăng Nhập
+            </Button>
+          </motion.div>
         </Form.Item>
       </Form>
       

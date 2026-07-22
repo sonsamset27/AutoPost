@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../components/layout/ThemeToggle';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from '../components/layout/PageTransition';
 
 const { Header, Sider, Content } = Layout;
 
@@ -53,19 +55,20 @@ const DashboardLayout = () => {
   };
 
   return (
-    <Layout className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <Layout className="min-h-screen bg-transparent transition-colors duration-300">
       <Sider 
         trigger={null} 
         collapsible 
         collapsed={collapsed}
         breakpoint="lg"
         onBreakpoint={(broken) => setCollapsed(broken)}
-        className="bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-sm"
-        theme="light"
+        className="glass border-r border-slate-200/50 dark:border-slate-800/50 shadow-sm z-10"
+        width={260}
+        style={{ background: 'transparent' }}
       >
-        <div className="h-16 flex items-center justify-center border-b border-slate-200 dark:border-slate-800">
+        <div className="h-16 flex items-center justify-center border-b border-slate-200/50 dark:border-slate-800/50">
           <Rocket className="w-8 h-8 text-indigo-500" />
-          {!collapsed && <span className="ml-2 font-bold text-lg text-slate-900 dark:text-white">AutoPost</span>}
+          {!collapsed && <span className="ml-2 font-bold text-lg text-slate-900 dark:text-white text-gradient">AutoPost</span>}
         </div>
         <Menu
           mode="inline"
@@ -76,7 +79,10 @@ const DashboardLayout = () => {
       </Sider>
       
       <Layout className="bg-transparent">
-        <Header className="h-16 px-4 flex items-center justify-between bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <Header 
+          className="h-16 px-4 flex items-center justify-between glass border-b border-slate-200/50 dark:border-slate-800/50 z-10"
+          style={{ padding: 0, paddingLeft: 16, paddingRight: 16, background: 'transparent' }}
+        >
           <div className="flex items-center">
             <Button
               type="text"
@@ -87,11 +93,11 @@ const DashboardLayout = () => {
           </div>
           <div className="flex items-center gap-4">
             {user?.plan === 'pro' ? (
-              <div className="hidden sm:flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-amber-200 to-amber-100 dark:from-amber-900/50 dark:to-amber-800/50 border border-amber-300 dark:border-amber-700/50">
+              <div className="hidden sm:flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-amber-200 to-amber-100 dark:from-amber-900/50 dark:to-amber-800/50 border border-amber-300 dark:border-amber-700/50 shadow-sm">
                 <span className="text-xs font-bold text-amber-700 dark:text-amber-400">PRO PLAN</span>
               </div>
             ) : (
-              <div className="hidden sm:flex items-center px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <div className="hidden sm:flex items-center px-3 py-1 rounded-full bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80">
                 <span className="text-xs font-bold text-slate-500 dark:text-slate-400">FREE PLAN</span>
               </div>
             )}
@@ -100,7 +106,7 @@ const DashboardLayout = () => {
             
             <Dropdown menu={userMenu} placement="bottomRight">
               <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                <Avatar className="bg-indigo-500">{user?.name?.charAt(0).toUpperCase()}</Avatar>
+                <Avatar className="bg-indigo-500 shadow-md">{user?.name?.charAt(0).toUpperCase()}</Avatar>
                 <div className="hidden md:block">
                   <p className="text-sm font-medium text-slate-700 dark:text-slate-200 leading-none">{user?.name}</p>
                 </div>
@@ -109,8 +115,12 @@ const DashboardLayout = () => {
           </div>
         </Header>
         
-        <Content className="p-4 sm:p-6 lg:p-8 overflow-auto">
-          <Outlet />
+        <Content className="p-4 sm:p-6 lg:p-8 overflow-auto relative">
+          <AnimatePresence mode="wait">
+            <PageTransition key={location.pathname}>
+              <Outlet />
+            </PageTransition>
+          </AnimatePresence>
         </Content>
       </Layout>
     </Layout>

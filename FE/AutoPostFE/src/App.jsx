@@ -13,11 +13,13 @@ const AppConfigProvider = () => {
       theme={{
         algorithm: isDarkMode ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
         token: {
-          colorPrimary: '#6366f1',
+          colorPrimary: '#6366f1', /* Vibrant Indigo */
           colorBgContainer: isDarkMode ? '#0f172a' : '#ffffff',
           colorBgElevated: isDarkMode ? '#1e293b' : '#ffffff',
-          borderRadius: 10,
-          fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif"
+          colorBorder: isDarkMode ? '#1e293b' : '#e2e8f0',
+          borderRadius: 12,
+          fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
+          controlHeight: 44,
         }
       }}
     >

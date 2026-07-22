@@ -48,7 +48,7 @@ const AppRoutes = () => {
 
         {/* Protected Admin Routes */}
         <Route element={<AdminRoute />}>
-          <Route element={<AdminLayout />}>
+          <Route element={<DashboardLayout />}>
             <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
         </Route>

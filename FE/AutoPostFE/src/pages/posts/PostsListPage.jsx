@@ -21,8 +21,8 @@ const PostsListPage = () => {
       const res = await postApi.getPosts();
       setPosts(res.data || []);
     } catch (error) {
-      if (error.message?.includes('404')) {
-        setPosts([]);
+      if (error.statusCode === 404) {
+        setPosts([]); // Chưa có bài viết nào, bình thường
       } else {
         message.error('Lỗi khi tải danh sách bài viết');
       }

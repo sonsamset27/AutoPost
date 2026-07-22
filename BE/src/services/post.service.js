@@ -10,7 +10,7 @@ import User from "../models/user.model.js";
 const PostService = {
     // 1. Tạo bài viết & Cài đặt hẹn giờ vào BullMQ
     create: async (userId, { accountIds, content, mediaUrls, scheduledAt }) => {
-        let status = "draft";
+        let status = "scheduled";
         let delay = 0;
 
         if (scheduledAt) {
@@ -18,7 +18,6 @@ const PostService = {
             if (delay <= 0) {
                 throw AppError.badRequest(ErrorCodes.INVALID_INPUT, "Thời gian hẹn giờ phải ở tương lai.");
             }
-            status = "scheduled";
         }
 
         const user = await User.findById(userId);
@@ -87,9 +86,7 @@ const PostService = {
             .skip(skip)
             .limit(limit);
 
-        if (posts.length === 0) {
-            throw AppError.notFound(ErrorCodes.POST_NOT_FOUND, "Không tìm thấy bài đăng nào.");
-        }
+        // Trả về mảng rỗng nếu chưa có bài nào (REST convention đúng)
         return posts;
     },
 

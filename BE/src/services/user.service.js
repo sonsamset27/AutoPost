@@ -14,9 +14,7 @@ const UserService = {
     getAll: async (filter = {}, page = 1, limit = 10) => {
         const skip = (page - 1) * limit;
         const users = await User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).select({ password: 0 });
-        if (users.length === 0) {
-            throw AppError.notFound(ErrorCodes.USER_001, "Users not found");
-        }
+        // Trả về mảng rỗng nếu chưa có user nào (REST convention đúng)
         return users;
     },
     changePassword: async (userId, oldPassword, newPassword) => {

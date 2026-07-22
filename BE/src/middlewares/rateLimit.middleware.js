@@ -20,11 +20,11 @@ export const getLimiter15m = rateLimit({
     legacyHeaders: false,
 });
 
-// GET: 10 requests per 1 minute
+// GET: 60 requests per 1 minute
 export const getLimiter1m = rateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 10,
-    message: "Bạn đã vượt quá giới hạn 10 lượt truy cập (GET) trong 1 phút. Vui lòng thử lại sau.",
+    max: 60,
+    message: "Bạn đã vượt quá giới hạn 60 lượt truy cập (GET) trong 1 phút. Vui lòng thử lại sau.",
     handler,
     standardHeaders: true,
     legacyHeaders: false,

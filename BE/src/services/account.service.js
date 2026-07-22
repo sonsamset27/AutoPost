@@ -43,9 +43,7 @@ const AccountService = {
 
     getAccounts: async (filter = {}) => {
         const accounts = await Account.find(filter).sort({ createdAt: -1 }).select("-config");
-        if (accounts.length === 0) {
-            throw AppError.notFound(ErrorCodes.ACCOUNT_002, "No connected accounts found");
-        }
+        // Trả về mảng rỗng nếu chưa có tài khoản nào (REST convention đúng)
         return accounts;
     },
 

@@ -31,9 +31,10 @@ const CreatePostPage = () => {
         const res = await accountApi.getAccounts({ isActive: true });
         setAccounts((res.data || []).filter(a => a.isActive));
       } catch (error) {
-        if (!error.message?.includes('404')) {
+        if (error.statusCode !== 404) {
           message.error('Lỗi lấy danh sách tài khoản');
         }
+        // 404 = không có tài khoản nào, bình thường
       } finally {
         setLoadingAccounts(false);
       }

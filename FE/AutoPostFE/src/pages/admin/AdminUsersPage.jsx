@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Button, Input, Select, Switch, Space, Popconfirm, message, Modal, InputNumber } from 'antd';
+import { Table, Tag, Button, Input, Select, Switch, Space, Popconfirm, Modal, InputNumber, App } from 'antd';
 import { Search, ShieldAlert, Crown, Trash2, Settings, UserCircle } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import dayjs from 'dayjs';
 
 const AdminUsersPage = () => {
+  const { message } = App.useApp();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   

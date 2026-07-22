@@ -6,6 +6,30 @@ import postApi from '../../api/postApi';
 import accountApi from '../../api/accountApi';
 import dayjs from 'dayjs';
 
+const StatCard = ({ title, value, limit, icon: Icon, colorClass }) => (
+  <Card className="h-full rounded-xl border-slate-200 dark:border-slate-800 dark:bg-slate-900/50 shadow-sm">
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">{title}</p>
+        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+          {value} {limit && <span className="text-sm font-normal text-slate-400">/ {limit}</span>}
+        </h3>
+      </div>
+      <div className={`p-3 rounded-lg ${colorClass}`}>
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+    </div>
+    {limit && (
+      <Progress 
+        percent={Math.round((value / limit) * 100)} 
+        showInfo={false} 
+        className="mt-4 mb-0" 
+        size="small"
+      />
+    )}
+  </Card>
+);
+
 const DashboardOverviewPage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState({
@@ -75,29 +99,7 @@ const DashboardOverviewPage = () => {
     }
   ];
 
-  const StatCard = ({ title, value, limit, icon: Icon, colorClass }) => (
-    <Card className="h-full rounded-xl border-slate-200 dark:border-slate-800 dark:bg-slate-900/50 shadow-sm">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">{title}</p>
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-            {value} {limit && <span className="text-sm font-normal text-slate-400">/ {limit}</span>}
-          </h3>
-        </div>
-        <div className={`p-3 rounded-lg ${colorClass}`}>
-          <Icon className="w-5 h-5 text-white" />
-        </div>
-      </div>
-      {limit && (
-        <Progress 
-          percent={Math.round((value / limit) * 100)} 
-          showInfo={false} 
-          className="mt-4 mb-0" 
-          size="small"
-        />
-      )}
-    </Card>
-  );
+
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">

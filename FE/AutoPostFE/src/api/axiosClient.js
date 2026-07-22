@@ -26,9 +26,10 @@ axiosClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    
+    const status = error.response?.status;
+
     // Handle 401 Unauthorized for access token expiry
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         // Attempt to refresh token
@@ -41,17 +42,18 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         // If refresh fails, user needs to login again
-        // But prevent redirect loops if already on login page
         if (!window.location.pathname.includes('/login')) {
           window.location.href = '/login';
         }
         return Promise.reject(refreshError);
       }
     }
-    
-    // Format error response consistently
+
+    // Format error response consistently, attach statusCode for easy checking
     const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
-    return Promise.reject(new Error(errorMessage));
+    const customError = new Error(errorMessage);
+    customError.statusCode = status;
+    return Promise.reject(customError);
   }
 );
 

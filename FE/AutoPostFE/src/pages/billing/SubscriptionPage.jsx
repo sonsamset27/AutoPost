@@ -142,9 +142,13 @@ const SubscriptionPage = () => {
             <p className="text-slate-500 mb-6">Mã giao dịch: {paymentData.transaction?.orderCode}</p>
             
             <div className="bg-slate-100 rounded-xl p-4 mb-6 inline-block">
-              {/* Dummy QR placeholder for mock */}
+              {/* QR placeholder or real QR */}
               <div className="w-48 h-48 bg-white border border-slate-200 flex items-center justify-center rounded">
-                <span className="text-slate-400 text-sm">QR Code Mockup<br/>(Link PayOS)</span>
+                {paymentData.qrCode ? (
+                  <img src={paymentData.qrCode} alt="Mã QR Thanh toán" className="w-full h-full object-contain p-2" />
+                ) : (
+                  <span className="text-slate-400 text-sm">Quét mã QR<br/>để thanh toán</span>
+                )}
               </div>
             </div>
 

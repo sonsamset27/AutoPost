@@ -20,8 +20,8 @@ const ConnectedAccountsPage = () => {
       const res = await accountApi.getAccounts();
       setAccounts(res.data || []);
     } catch (error) {
-      if (error.message && error.message.includes('404')) {
-        setAccounts([]); // Lỗi 404 do danh sách rỗng, không phải lỗi hệ thống
+      if (error.statusCode === 404) {
+        setAccounts([]); // Danh sách rỗng, không phải lỗi
       } else {
         message.error('Không thể tải danh sách tài khoản');
       }
@@ -176,7 +176,7 @@ const ConnectedAccountsPage = () => {
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form 
           form={form} 

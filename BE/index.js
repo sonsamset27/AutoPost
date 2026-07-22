@@ -1,7 +1,6 @@
-// ⚠️ dotenv phải được load TRƯỚC tất cả mọi thứ vì ES module hoist static imports
-// Giải pháp: dùng --env-file flag hoặc load dotenv trong từng config file riêng
 import 'dotenv/config';
 import express from "express";
+import cors from "cors";
 import connectDB from "./src/configs/db.js";
 import UserRoute from "./src/routes/user.route.js";
 import AuthRoute from "./src/routes/auth.route.js";
@@ -18,11 +17,15 @@ import morgan from "morgan";
 
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3027;
 
 connectDB();
 setupRetentionJob(); // Khởi động cron job dọn rác 7 ngày
 
+app.use(cors({
+    origin: 'http://localhost:5174',
+    credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));

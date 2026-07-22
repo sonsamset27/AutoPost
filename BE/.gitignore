@@ -1,10 +1,8 @@
 /node_modules
 
+/test
+
 .env
 .env.*
 !.env.example
 
-.test-apis.js
-.test-full-e2e.js
-.test-telegram-e2e.js
-.test-discord-e2e.js

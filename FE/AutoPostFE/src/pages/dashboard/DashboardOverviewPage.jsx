@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Progress, Table, Tag, Button } from 'antd';
 import { Share2, FileText, Clock, Crown, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import postApi from '../../api/postApi';
 import accountApi from '../../api/accountApi';
@@ -20,10 +21,10 @@ const StatCard = ({ title, value, limit, icon: Icon, colorClass }) => (
       </div>
     </div>
     {limit && (
-      <Progress 
-        percent={Math.round((value / limit) * 100)} 
-        showInfo={false} 
-        className="mt-4 mb-0" 
+      <Progress
+        percent={Math.round((value / limit) * 100)}
+        showInfo={false}
+        className="mt-4 mb-0"
         size="small"
       />
     )}
@@ -45,19 +46,19 @@ const DashboardOverviewPage = () => {
       try {
         const fetchPosts = postApi.getPosts({ limit: 5 }).catch(err => ({ data: [] }));
         const fetchAccounts = accountApi.getAccounts().catch(err => ({ data: [] }));
-        
+
         const [postsRes, accountsRes] = await Promise.all([fetchPosts, fetchAccounts]);
-        
+
         const posts = postsRes.data || [];
         const accounts = accountsRes.data || [];
-        
+
         // Mocking some stats logic since BE might not provide exact aggregates in /posts endpoint
         setStats({
           accountsCount: accounts.length,
           monthPostsCount: posts.filter(p => p.status === 'published').length, // mock
           scheduledCount: posts.filter(p => p.status === 'scheduled').length
         });
-        
+
         setRecentPosts(posts.slice(0, 5));
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
@@ -65,12 +66,12 @@ const DashboardOverviewPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchDashboardData();
   }, []);
 
   const getStatusTag = (status) => {
-    switch(status) {
+    switch (status) {
       case 'published': return <Tag color="success">Đã đăng</Tag>;
       case 'scheduled': return <Tag color="processing">Đã lên lịch</Tag>;
       case 'failed': return <Tag color="error">Lỗi</Tag>;
@@ -118,60 +119,62 @@ const DashboardOverviewPage = () => {
               Nâng cấp lên PRO để bỏ giới hạn 30 bài/tháng và mở khóa tính năng đăng ảnh/video!
             </p>
           </div>
-          <Button type="primary" className="bg-amber-500 hover:bg-amber-600 border-none">
-            Nâng Cấp Ngay
+          <Button type="primary" className="bg-amber-500 hover:bg-amber-600 border-none" >
+            <Link to="/billing">
+              Nâng Cấp Ngay
+            </Link>
           </Button>
         </div>
       )}
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
-          <StatCard 
-            title="Tài khoản MXH" 
-            value={stats.accountsCount} 
-            limit={user?.plan === 'free' ? 3 : null} 
+          <StatCard
+            title="Tài khoản MXH"
+            value={stats.accountsCount}
+            limit={user?.plan === 'free' ? 3 : null}
             icon={Share2}
             colorClass="bg-blue-500 shadow-blue-500/30"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <StatCard 
-            title="Bài đã đăng tháng này" 
-            value={stats.monthPostsCount} 
-            limit={user?.plan === 'free' ? 30 : null} 
+          <StatCard
+            title="Bài đã đăng tháng này"
+            value={stats.monthPostsCount}
+            limit={user?.plan === 'free' ? 30 : null}
             icon={FileText}
             colorClass="bg-emerald-500 shadow-emerald-500/30"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <StatCard 
-            title="Bài chờ phát (Queue)" 
-            value={stats.scheduledCount} 
+          <StatCard
+            title="Bài chờ phát (Queue)"
+            value={stats.scheduledCount}
             limit={user?.plan === 'free' ? 3 : null}
             icon={Clock}
             colorClass="bg-amber-500 shadow-amber-500/30"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <StatCard 
-            title="Gói Dịch Vụ" 
-            value={user?.plan?.toUpperCase()} 
+          <StatCard
+            title="Gói Dịch Vụ"
+            value={user?.plan?.toUpperCase()}
             icon={Crown}
             colorClass="bg-violet-500 shadow-violet-500/30"
           />
         </Col>
       </Row>
 
-      <Card 
-        title={<span className="font-semibold dark:text-white">Bài viết gần đây</span>} 
+      <Card
+        title={<span className="font-semibold dark:text-white">Bài viết gần đây</span>}
         extra={<Button type="link" className="flex items-center gap-1">Xem tất cả <ArrowRight className="w-4 h-4" /></Button>}
         className="rounded-xl border-slate-200 dark:border-slate-800 dark:bg-slate-900/50 shadow-sm custom-card-header"
       >
-        <Table 
-          dataSource={recentPosts} 
-          columns={columns} 
-          rowKey="_id" 
-          pagination={false} 
+        <Table
+          dataSource={recentPosts}
+          columns={columns}
+          rowKey="_id"
+          pagination={false}
           loading={loading}
           className="custom-table"
           scroll={{ x: 800 }}

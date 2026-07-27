@@ -27,7 +27,8 @@ setupRetentionJob(); // Khởi động cron job dọn rác 7 ngày
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
-    'https://auto-post-weld-seven.vercel.app'
+    'https://auto-post-weld-seven.vercel.app',
+    'https://auto-post-git-main-son-vu-s-projects.vercel.app'
 ];
 
 app.use(cors({

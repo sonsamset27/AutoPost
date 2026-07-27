@@ -24,7 +24,7 @@ connectDB();
 setupRetentionJob(); // Khởi động cron job dọn rác 7 ngày
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'https://auto-post-weld-seven.vercel.app'],
     credentials: true,
 }));
 app.use(express.json());

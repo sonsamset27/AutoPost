@@ -23,10 +23,40 @@ const PORT = process.env.PORT || 3027;
 connectDB();
 setupRetentionJob(); // Khởi động cron job dọn rác 7 ngày
 
+// Danh sách các domain được phép truy cập của bạn
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://auto-post-weld-seven.vercel.app'
+];
+
+// Danh sách các domain được phép truy cập của bạn
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://auto-post-weld-seven.vercel.app'
+];
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'https://auto-post-weld-seven.vercel.app'],
-    credentials: true,
+    origin: function (origin, callback) {
+        // Cho phép các request không có origin (ví dụ: Postman hoặc lệnh gọi nội bộ)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Bị chặn bởi cấu hình CORS của Backend!'));
+        }
+    },
+    credentials: true, // Cho phép truyền cookie / token
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Xử lý triệt để các request Preflight lệnh OPTIONS
+app.options('*', cors());
+
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));

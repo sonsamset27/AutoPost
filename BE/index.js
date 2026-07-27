@@ -16,6 +16,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
 const app = express();
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 3027;
 
@@ -29,6 +30,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
 
 // Áp dụng Rate Limiting toàn cầu
 app.use(globalRateLimiter);

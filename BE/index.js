@@ -32,22 +32,17 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Cho phép các request không có origin (ví dụ: Postman hoặc lệnh gọi nội bộ)
         if (!origin) return callback(null, true);
-
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             callback(new Error('Bị chặn bởi cấu hình CORS của Backend!'));
         }
     },
-    credentials: true, // Cho phép truyền cookie / token
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Xử lý triệt để các request Preflight lệnh OPTIONS
-app.options('*', cors());
 
 
 app.use(express.json());

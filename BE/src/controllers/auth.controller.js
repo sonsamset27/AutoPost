@@ -31,14 +31,16 @@ const AuthController = {
             res.cookie("accessToken", AccessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                maxAge: 15 * 60 * 1000
+                maxAge: 15 * 60 * 1000,
+                sameSite: "none"
             });
 
             res.cookie("refreshToken", RefreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 path: "/api/v1/auth",
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                sameSite: "none"
             });
 
             return res.status(200).json({ success: true, message: "Sign in successful" });
@@ -64,14 +66,16 @@ const AuthController = {
             res.cookie("accessToken", AccessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                maxAge: 15 * 60 * 1000
+                maxAge: 15 * 60 * 1000,
+                sameSite: "none"
             });
 
             res.cookie("refreshToken", RefreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 path: "/api/v1/auth",
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                sameSite: "none"
             });
 
             return res.status(200).json({ success: true, message: "Token refreshed" });

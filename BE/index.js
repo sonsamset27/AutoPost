@@ -30,13 +30,6 @@ const allowedOrigins = [
     'https://auto-post-weld-seven.vercel.app'
 ];
 
-// Danh sách các domain được phép truy cập của bạn
-const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://auto-post-weld-seven.vercel.app'
-];
-
 app.use(cors({
     origin: function (origin, callback) {
         // Cho phép các request không có origin (ví dụ: Postman hoặc lệnh gọi nội bộ)
